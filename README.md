@@ -21,3 +21,7 @@ Lecture 4
 > Backpropagation
 > Multi-Layer Perceptrons
 > Neuron Viewpoint
+
+Lecture 5
+> Convolutional Neural Network (CNN)
+> http://taewan.kim/post/cnn/
