@@ -1,2 +1,7 @@
-# Don't track content of these folders
-/.env
+*.swp
+*.pyc
+.env/*
+*.ipynb_checkpoints/*
+
+# gitignore the built release.
+assignment3/*
