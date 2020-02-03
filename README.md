@@ -25,3 +25,12 @@ Lecture 4
 Lecture 5
 > Convolutional Neural Network (CNN)
 > http://taewan.kim/post/cnn/
+
+Lecture 6
+> Traning Neural Network
+> Sigmoid Function Cons
+> - Gradient Vanishing
+> - Gradient always positive
+> Proper Initialization
+> Batch Normalization
+> Babysitting the Learning Process
