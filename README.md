@@ -34,3 +34,12 @@ Lecture 6
 > Proper Initialization
 > Batch Normalization
 > Babysitting the Learning Process
+
+## Assignments
+
+Assignment 1
+> features
+> knn (kth nearest neighbor)
+> softmax function
+> svm
+> two_layer_network
