@@ -109,6 +109,9 @@ def svm_loss_vectorized(W, X, y, reg):
     binary[np.arange(num_train), y] = -row_sum.T
     dW = np.dot(X.T, binary)
 
+    dW /= num_train
+    dW += reg*W
+
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     return loss, dW
