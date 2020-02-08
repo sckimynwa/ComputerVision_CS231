@@ -43,3 +43,6 @@ Assignment 1
 > softmax function
 > svm
 > two_layer_network
+
+About svm loss gradient explanation
+- https://mlxai.github.io/2017/01/06/vectorized-implementation-of-svm-loss-and-gradient-update.html
