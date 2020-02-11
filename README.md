@@ -31,9 +31,20 @@ Lecture 6
 > Sigmoid Function Cons
 > - Gradient Vanishing
 > - Gradient always positive
+> various activation function
 > Proper Initialization
 > Batch Normalization
 > Babysitting the Learning Process
+
+Lecture 7
+> Activation funtion revisited
+> Gradient Descent
+    - SGD (Stochastic Gradient Descent)
+    - SGD + Momentum
+    - SGD + Nesterov Momentum
+    - AdaGrad
+    - RmsProp
+    - Adam
 
 ## Assignments
 
