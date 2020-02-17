@@ -38,3 +38,19 @@
 - 10 RBF unit, result the class
 
 ## Alexnet
+
+- similar to LeNet
+- parallel structure using 2 GPU
+- consists of 8 layers
+    - 5 convolutional layer
+    - 3 fully - connected layer
+
+- 2, 4, 5 convolutional layer : connected to the same channel feature map
+- 3 convolutional layer : connected to the all 2 feature map (channel)
+
+- using ReLU as an activation function (better than tanh function)
+- using dropout (but using all neurons in test) - prevent overfitting
+- using max pooling & overlapping pooling
+- local response normalization(LRN) : 활성화된 뉴런이 주변 이웃 뉴런들을 억누르는 현상
+- 강하게 활성화된 뉴런의 주변 이웃들에 대해서 normalization
+- data augmentation
