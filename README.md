@@ -1,32 +1,40 @@
 # ComputerVision_CS231
-Stanford ComputerVision Study
+
+Stanford ComputerVision Study 
+lecture supported by Stanford cs231n lecture
 
 ## Syllabus
 
 Lecture 1
+
 > Computer vision overview
 > Historical Context
 
 Lecture 2
+
 > Image Classification
 > Data-driven Approach
 > K-nearest neighbor
 > Linear classification
 
 Lecture 3
+
 > Higher-Level representations
 > Optimization, stochastic gradient descent
 
 Lecture 4
+
 > Backpropagation
 > Multi-Layer Perceptrons
 > Neuron Viewpoint
 
 Lecture 5
+
 > Convolutional Neural Network (CNN)
 > http://taewan.kim/post/cnn/
 
 Lecture 6
+
 > Traning Neural Network
 > Sigmoid Function Cons
 > - Gradient Vanishing
@@ -37,6 +45,7 @@ Lecture 6
 > Babysitting the Learning Process
 
 Lecture 7
+
 > Activation funtion revisited
 > Gradient Descent
     - SGD (Stochastic Gradient Descent)
@@ -45,6 +54,16 @@ Lecture 7
     - AdaGrad
     - RmsProp
     - Adam
+
+Lecture 8
+> 
+
+Lecture 9
+> Readme.md added in Lecture 9 folder
+
+Lecture 10
+> Readme.md added in Lecture 10 folder
+> RNN Model & Examples
 
 ## Assignments
 
