@@ -26,15 +26,6 @@ def affine_forward(x, w, b):
     # will need to reshape the input into rows.                               #
     ###########################################################################
     
-    # out = []
-    # batch_size = x.shape[0]
-
-    # for i in range(batch_size):
-    #   one_dim_arr = x[i].reshape(-1)
-    #   result = np.matmul(one_dim_arr, w) + b
-    #   out.append(result)
-
-    # modify code in one line (Amazing)
     out = x.reshape(x.shape[0], -1).dot(w) + b
 
     ###########################################################################
@@ -539,12 +530,14 @@ def svm_loss(x, y):
     - loss: Scalar giving the loss
     - dx: Gradient of the loss with respect to x
     """
-    N = x.shape[0]
-    correct_class_scores = x[np.arange(N), y]
-    margins = np.maximum(0, x - correct_class_scores[:, np.newaxis] + 1.0)
-    margins[np.arange(N), y] = 0
-    loss = np.sum(margins) / N
+
+    N = x.shape[0]                                                          # number of datasets
+    correct_class_scores = x[np.arange(N), y]                               # real scores of correct_classes
+    margins = np.maximum(0, x - correct_class_scores[:, np.newaxis] + 1.0)  # calculate svm loss
+    margins[np.arange(N), y] = 0                                            # make answer value to zero 
+    loss = np.sum(margins) / N                                              # normalization
     num_pos = np.sum(margins > 0, axis=1)
+    
     dx = np.zeros_like(x)
     dx[margins > 0] = 1
     dx[np.arange(N), y] -= num_pos
