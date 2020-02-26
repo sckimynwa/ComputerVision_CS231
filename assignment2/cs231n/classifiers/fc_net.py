@@ -208,7 +208,6 @@ class FullyConnectedNet(object):
               self.params[W_i] = np.random.randn(hidden_dims[len(hidden_dims)-1],num_classes) * weight_scale
               self.params[b_i] = np.zeros(num_classes)
           
-          # with batch normalization
           else:
             # First hidden layer
             if i == 0:
@@ -217,9 +216,7 @@ class FullyConnectedNet(object):
             # Intermediate hidden layer
             else:
                 self.params[W_i] = np.random.randn(hidden_dims[i-1], hidden_dims[i]) * weight_scale
-                self.params[b_i] = np.zeros(hidden_dims[i])
-
-           
+                self.params[b_i] = np.zeros(hidden_dims[i]) 
 
         ############################################################################
         #                             END OF YOUR CODE                             #
@@ -291,8 +288,7 @@ class FullyConnectedNet(object):
             out = X
           
           # Hidden layer
-          else :
-            out, caches[i+1] = affine_relu_forward(out, self.params[W_i], self.params[b_i])
+          out, caches[i+1] = affine_relu_forward(out, self.params[W_i], self.params[b_i])
 
           # Later we will implement batch normalization and dropout features
 
