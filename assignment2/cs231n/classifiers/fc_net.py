@@ -278,7 +278,7 @@ class FullyConnectedNet(object):
         
         caches = {}
 
-        # do not include the last layer -> softmax
+        # do not include the last layer
         for i in range(self.num_layers - 1):
           W_i = 'W' + str(i+1)
           b_i = 'b' + str(i+1)
@@ -320,7 +320,7 @@ class FullyConnectedNet(object):
         # automated tests, make sure that your L2 regularization includes a factor #
         # of 0.5 to simplify the expression for the gradient.                      #
         ############################################################################
-        
+
         loss, d_scores = softmax_loss(scores, y)
 
         for i in range(self.num_layers, 0, -1):
