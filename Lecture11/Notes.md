@@ -51,7 +51,34 @@ stride = 1, padding 일정한 Convolution을 진행해야 하지만, 이는 메�
 > 차원을 늘려서 인풋과 같은 차원으로 만들어주는 과정
 > Strided Transpose Convolution을 주로 사용
 
+### Classification & Localization
+
+기본적으로 image classificatino과 비슷한 구조이지만, 하나의 Fully Connected Layer가 더 있다. 
+Box Coordinate를 위한 Layer
+
+하나의 레이어는 score를 반환, 하나는 Bounding Box의 좌표를 반환한다. 
+2개의 loss가 존재하고, 이것은 완전히 지도학습이기 때문에, 학습 이미지는 label과 box coordinate를 둘다 가지고 있어야 한다. 
+
+이 2개의 Loss를 함친 것을 Multi-task loss라고 부르며, 이 것의 Gradient를 구하려면 네트워크 가중치들의 각각의 미분 값을 구해야 한다.
+
+* Regression Loss란
+Cross entropy, softmax가 아닌 Loss를 뜻한다. 연속적인 Loss를 의미함.
+고정된 개수의 카테고리가 있고, 이걸 가지고 Class Score를 예측하게 되면, cross entropy/svm loss 등을 사용할 수 있지만, 
+출력이 연속적인 값이라면, (e.g 관절의 위치) 이는 연속적인 값이기 때문에 다른 loss를 사용해야 한다. 
 
 
+### Object Detection
 
+Localization은 이미지가 하나라고 가정, 하지만 Object Detection은 이미지가 몇 개인지 예측을 할 수 없다. 
+regression을 이용해서 풀기에는 상당히 까다로움
+
+1. Sliding Window
+> 특정 크기를 가진 window를 계속해서 이동 카테코리 학습
+> 하지만 어떻게 영역을 추측해야 하는지도 명확하지 않고, 크기가 얼마나 되는지도 알 수가 없다.
+
+2. Region Proposal
+> 딥러닝을 사용하지 않는다. 
+> 객체가 있을법한 후보를 찾아내는 것. 1000개의 region을 selective search를 통해 찾아낸다. 
+> '뭉친' 곳들을 찾아내는 방식. 따라서 이미지에 객체가 존재한다면, Selective Search 의 region 안에 있을 가능성이 높다. 
+> region proposal을 CNN의 입력으로 해서 추출한다.
 
