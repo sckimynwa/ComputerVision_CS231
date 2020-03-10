@@ -144,7 +144,10 @@ class CaptioningRNN(object):
         embedded_captions, cache_word_embedding = word_embedding_forward(captions_in, W_embed)
 
         # Vanila RNN
-        rnn_outputs, cache_rnn = rnn_forward(embedded_captions, initial_hidden_state, Wx, Wh, b)
+        if self.cell_type == 'rnn':
+          rnn_outputs, cache_rnn = rnn_forward(embedded_captions, initial_hidden_state, Wx, Wh, b)
+        elif self.cell_type == 'lstm':
+          rnn_outputs, cache_rnn = lstm_forward(embedded_captions, initial_hidden_state, Wx, Wh, b)
 
         scores, cache_scores = temporal_affine_forward(rnn_outputs, W_vocab, b_vocab)
         loss, dsoftmax = temporal_softmax_loss(scores, captions_out, mask)
@@ -153,8 +156,13 @@ class CaptioningRNN(object):
         dscores, dW_vocab, db_vocab = temporal_affine_backward(dsoftmax, cache_scores)
         grads['W_vocab'], grads['b_vocab'] = dW_vocab, db_vocab
 
-        dx, dh0, dWx, dWh, db = rnn_backward(dscores, cache_rnn)
-        grads['b'], grads['Wh'], grads['Wx'] = db, dWh, dWx
+        if self.cell_type == 'rnn':
+          dx, dh0, dWx, dWh, db = rnn_backward(dscores, cache_rnn)
+          grads['b'], grads['Wh'], grads['Wx'] = db, dWh, dWx
+        elif self.cell_type == 'lstm':
+          dx, dh0, dWx, dWh, db = lstm_backward(dscores, cache_rnn)
+          grads['b'], grads['Wh'], grads['Wx'] = db, dWh, dWx
+        
 
         dW_embed = word_embedding_backward(dx, cache_word_embedding)
         grads['W_embed'] = dW_embed
@@ -225,20 +233,28 @@ class CaptioningRNN(object):
         ###########################################################################
         
         cur_hidden_state, _ = affine_forward(features, W_proj, b_proj)
+
+        if self.cell_type == 'lstm':
+          cur_cell_state = np.zeros_like(cur_hidden_state)
+
         word_embed, _ = word_embedding_forward(self._start, W_embed)
 
         # Sample max_length number of words.
         for i in range(max_length):
           
+          if self.cell_type == 'rnn':  
             cur_hidden_state, _ = rnn_step_forward(word_embed, cur_hidden_state, Wx, Wh, b)
-            # Scores for this current time step.
-            cur_scores, _ = affine_forward(cur_hidden_state, W_vocab, b_vocab)
+          elif self.cell_type == 'lstm':
+            cur_hidden_state, cur_cell_state, _ = lstm_step_forward(word_embed, cur_hidden_state, cur_cell_state, Wx, Wh, b)
+        
+          # Scores for this current time step.
+          cur_scores, _ = affine_forward(cur_hidden_state, W_vocab, b_vocab)
 
-            # Find the highest value index and assign it to the correct place in captions.
-            captions[:,i] = np.argmax(cur_scores, axis=1)
+          # Find the highest value index and assign it to the correct place in captions.
+          captions[:,i] = np.argmax(cur_scores, axis=1)
 
-            # Embed the word produced for the next iteration.
-            word_embed, _ = word_embedding_forward(captions[:, i], W_embed)
+          # Embed the word produced for the next iteration.
+          word_embed, _ = word_embedding_forward(captions[:, i], W_embed)
 
         ############################################################################
         #                             END OF YOUR CODE                             #

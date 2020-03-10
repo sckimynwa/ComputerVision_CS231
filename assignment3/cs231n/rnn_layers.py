@@ -317,7 +317,7 @@ def lstm_step_forward(x, prev_h, prev_c, Wx, Wh, b):
     next_c = (f * prev_c) + (i * g)
     next_h = o * np.tanh(next_c)
 
-    cache = (x, Wx, Wh, prev_h, prev_c, i, f, o, g, next_c, next_h)
+    cache = (x, Wx, Wh, prev_h, prev_c, i, f, o, g, next_c, next_h, b)
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ##############################################################################
@@ -353,7 +353,7 @@ def lstm_step_backward(dnext_h, dnext_c, cache):
     #############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    (x, Wx, Wh, prev_h, prev_c, i, f, o, g, next_c, next_h) = cache
+    (x, Wx, Wh, prev_h, prev_c, i, f, o, g, next_c, next_h, b) = cache
     
     # Backprop dnext_h
     dh_tanh = dnext_h * o
@@ -417,7 +417,18 @@ def lstm_forward(x, h0, Wx, Wh, b):
     #############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    N, T, D = x.shape
+    N, H = h0.shape
+
+    cache = []
+    h = np.zeros([N, T, H])
+    prev_h = h0
+    prev_c = np.zeros_like(h0)
+
+    for time_step in range(T):
+        prev_h, prev_c, cache_temp = lstm_step_forward(x[:, time_step, :], prev_h, prev_c, Wx, Wh, b)
+        h[:, time_step, :] = prev_h
+        cache.append(cache_temp)
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ##############################################################################
@@ -449,7 +460,28 @@ def lstm_backward(dh, cache):
     #############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    x, Wx, Wh, prev_h, prev_c, i, f, o, g, next_c, next_h, b = cache[0]
+
+    N, T, H = dh.shape
+    D, _ = Wx.shape
+
+    dx = np.zeros([N, T, D])
+    dprev_h = np.zeros_like(prev_h)
+    dprev_c = np.zeros_like(prev_h)
+    dWx = np.zeros_like(Wx)
+    dWh = np.zeros_like(Wh)
+    db = np.zeros_like(b)
+
+    for t in reversed(range(T)):
+        cur_dh = dprev_h + dh[:, t, :]
+        dx[:, t, :], dprev_h, dprev_c, dWx_temp, dWh_temp, db_temp = lstm_step_backward(cur_dh, dprev_c, cache[t])
+
+        db += db_temp
+        dWh += dWh_temp
+        dWx += dWx_temp
+
+    dh0 = dprev_h
+
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ##############################################################################
