@@ -200,7 +200,7 @@ def word_embedding_forward(x, W):
     - W: Weight matrix of shape (V, D) giving word vectors for all words.
 
     Returns a tuple of:
-    - out: Array of shape (N, T, D) giving word vectors for all input words.
+    - out: Arra of shape (N, T, D) giving word vectors for all input words.
     - cache: Values needed for the backward pass
     """
     out, cache = None, None
@@ -299,7 +299,25 @@ def lstm_step_forward(x, prev_h, prev_c, Wx, Wh, b):
     #############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    # compute H
+    h = prev_h.shape[1] 
+    a = x.dot(Wx) + prev_h.dot(Wh) + b
+
+    a_i = a[:, 0:h]
+    a_f = a[:, h:2*h]
+    a_o = a[:, 2*h:3*h]
+    a_g = a[:, 3*h:4*h]
+
+    i = sigmoid(a_i)
+    f = sigmoid(a_f)
+    o = sigmoid(a_o)
+    g = np.tanh(a_g)
+
+    # calculate
+    next_c = (f * prev_c) + (i * g)
+    next_h = o * np.tanh(next_c)
+
+    cache = (x, Wx, Wh, prev_h, prev_c, i, f, o, g, next_c, next_h)
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ##############################################################################
@@ -335,7 +353,32 @@ def lstm_step_backward(dnext_h, dnext_c, cache):
     #############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    (x, Wx, Wh, prev_h, prev_c, i, f, o, g, next_c, next_h) = cache
+    
+    # Backprop dnext_h
+    dh_tanh = dnext_h * o
+    da_o_partial = dnext_h * np.tanh(next_c)
+
+    dtanh = dh_tanh * (1 - np.square(np.tanh(next_c)))
+    dtanh_dc = (dnext_c + dtanh)
+
+    dprev_c = dtanh_dc * f
+    da_i_partial = dtanh_dc * g
+    da_g_partial = dtanh_dc * i
+    da_f_partial = dtanh_dc * prev_c
+
+    da_i = i*(1-i) * da_i_partial
+    da_f = f*(1-f) * da_f_partial
+    da_o = o*(1-o) * da_o_partial
+    da_g = (1-np.square(g)) * da_g_partial
+
+    da_vector = np.concatenate((da_i, da_f, da_o, da_g), axis=1)
+    db = np.sum(da_vector, axis=0)
+    dx = np.dot(da_vector, Wx.T)
+    dprev_h = np.dot(da_vector, Wh.T)
+    dWh = np.dot(prev_h.T, da_vector)
+    dWx = np.dot(x.T, da_vector)
+
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ##############################################################################
